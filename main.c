@@ -11,6 +11,11 @@
 
 char hex[16] = "0123456789abcdef";
 
+static inline void uart_transmit(char c) {
+        while(!(UCSRA & (1<<UDRE)));
+        UDR = c;
+}
+
 int main(void) {
         // set everything to input without pullups
         DDRB = DDRC = 0;
@@ -46,18 +51,13 @@ int main(void) {
                 if(buflen == 2) {
                         // write the buffer to the uart in hexadecimal
                         for(i = 0; i < 2; i++) {
-                                while(!(UCSRA & (1<<UDRE)));
-                                UDR = hex[buffer[i] / 16];
-                                while(!(UCSRA & (1<<UDRE)));
-                                UDR = hex[buffer[i] & 0x0F];
-                                while(!(UCSRA & (1<<UDRE)));
-                                UDR = ' ';
+                                uart_transmit(hex[buffer[i]/16]);
+                                uart_transmit(hex[buffer[i]%16]);
+                                uart_transmit(' ');
                         }
                         // line break
-                        while(!(UCSRA & (1<<UDRE)));
-                        UDR = '\r';
-                        while(!(UCSRA & (1<<UDRE)));
-                        UDR = '\n';
+                        uart_transmit('\r');
+                        uart_transmit('\n');
                         buflen = 0;
 
                         // wait - the numbers get flashed to the display a few times,
@@ -82,14 +82,11 @@ int main(void) {
                 if(i > 0) {
                         // Write the number to the uart, in ascii
                         i += '0'; 
-                        while(!(UCSRA & (1<<UDRE)));
-                        UDR = i;
-                        while(!(UCSRA & (1<<UDRE)));
+                        uart_transmit(i);
 
                         // Add a linebreak
-                        UDR = '\r';
-                        while(!(UCSRA & (1<<UDRE)));
-                        UDR = '\n';
+                        uart_transmit('\r');
+                        uart_transmit('\n');
 
                         // wait - the numbers get flashed to the display a few times,
                         // and we don't want to read anything twice.
