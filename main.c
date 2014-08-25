@@ -20,8 +20,7 @@ int main(void) {
         SPCR  = 1<<SPE;
 
         // Set baud rate
-        UBRRH = (unsigned char) 0;
-        UBRRL = (unsigned char) 52;
+        UBRR = MYUBRR;
         // Enable transmitter
         UCSRB = 1<<TXEN;
         // Set frame format
