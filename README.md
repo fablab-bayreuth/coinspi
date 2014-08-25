@@ -46,4 +46,8 @@ we cut the trace of the now useless signal wire that used to output
 the pulses and put the UART signal in its place instead. You could
 even output everything with a bluetooth module.
 
+A DIP ATMega8 fits into the CH-926's case rather easily, and runs on
+the same voltage (5V), so you can have everything looking the same
+as before, but with much nicer outputs :)
+
 TODO: Document the SPI pins on the shift register properly.
